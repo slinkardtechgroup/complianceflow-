@@ -1,35 +1,55 @@
 import { supabase } from "../lib/supabase";
 
-export default async function VendorsPage() {
-  const { data: vendors } = await supabase
+export default async function Home() {
+  const { count: companyCount } = await supabase
+    .from("companies")
+    .select("*", {
+      count: "exact",
+      head: true,
+    });
+
+  const { count: projectCount } = await supabase
+    .from("projects")
+    .select("*", {
+      count: "exact",
+      head: true,
+    });
+
+  const { count: vendorCount } = await supabase
     .from("vendors")
-    .select("*");
+    .select("*", {
+      count: "exact",
+      head: true,
+    });
 
   return (
     <main style={{ padding: "40px" }}>
-      <h1>Vendors</h1>
+      <h1>ComplianceFlow Dashboard</h1>
 
-      {vendors?.map((vendor) => (
-        <div
-          key={vendor.id}
-          style={{
-            border: "1px solid #ddd",
-            padding: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-          }}
-        >
-          <h2>{vendor.trade_type}</h2>
-
-          <p>{vendor.contact_name}</p>
-
-          <p>{vendor.contact_email}</p>
-
-          <p>Status: {vendor.compliance_status}</p>
-
-          <p>ID: {vendor.id}</p>
+      <div style={{ display: "flex", gap: "40px" }}>
+        <div>
+          <h2>Companies</h2>
+          <h3>{companyCount ?? 0}</h3>
         </div>
-      ))}
+
+        <div>
+          <h2>Projects</h2>
+          <h3>{projectCount ?? 0}</h3>
+        </div>
+
+        <div>
+          <h2>Vendors</h2>
+          <h3>{vendorCount ?? 0}</h3>
+        </div>
+      </div>
+
+      <hr />
+
+      <h2>Pages</h2>
+
+      <p>/vendors</p>
+      <p>/projects</p>
+      <p>/alerts</p>
     </main>
   );
 }
